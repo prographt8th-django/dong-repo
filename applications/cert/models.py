@@ -24,6 +24,9 @@ class University(BaseModel):
     name = models.CharField(max_length=30, verbose_name="대학교 이름")
     location = models.IntegerField(choices=LOCATION_CHOICES, verbose_name="대학 소재지")
 
+    def __str__(self):
+        return self.name
+
 
 class UserManager(BaseUserManager):
     """
