@@ -64,6 +64,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, BaseModel):
     """
     실제 User Model 입니다.
+    # TODO : student_id null=False
     """
     university = models.ForeignKey(University, null=True, on_delete=models.CASCADE, related_name="user", verbose_name="소속 학교")
     student_id = models.CharField(max_length=15, verbose_name="학번")
