@@ -117,6 +117,15 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "applications.base.error_handler.server_error_handler",
 }
 
+# email
+EMAIL_BACKEND = django_env_file["EMAIL_BACKEND"]
+EMAIL_HOST = django_env_file["EMAIL_HOST"]
+EMAIL_HOST_USER = django_env_file["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = django_env_file["EMAIL_HOST_PASSWORD"]
+EMAIL_USE_TLS = django_env_file["EMAIL_USE_TLS"]
+EMAIL_PORT = django_env_file["EMAIL_PORT"]
+DEFAULT_FROM_MAIL = django_env_file["DEFAULT_FROM_MAIL"]
+
 # celery
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
