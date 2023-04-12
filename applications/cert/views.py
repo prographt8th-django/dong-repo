@@ -2,12 +2,15 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 from applications.base.permission import IsAdminUser
-from applications.base.response import operation_success
+from rest_framework.decorators import action
+from applications.base.response import operation_success, operation_failure
 from applications.cert.models import University, User
 from applications.cert.serializers import UniversitySerializer, UserSerializer, UserDetailSerializer
 from django.core.cache import cache
 
 from applications.cert.tasks import task_send_email
+from applications.cert.utils import randomToken
+from config.settings import CACHE_TTL_DEFAULT
 
 
 # Create your views here.
@@ -32,21 +35,22 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     detail_serializer_class = UserDetailSerializer
 
-    def create(self, requset, *args, **kwargs):
-        # TODO: 회원가입을 하면 token : id 로 캐쉬에 저장하고
-        # TODO: 이메일로 celery 이용해 보내고
-        # TODO: account로 보내서 검증 후 is_active 활성화
+    def create(self, request, *args, **kwargs):
         try:
-            task_send_email.delay("odh0112@naver.com", "asdsadasd")
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid():
+                user = serializer.save()
+                token = randomToken()
+                cache.set(token, user.email, CACHE_TTL_DEFAULT)
+                task_send_email.delay(user.email, token)
+            else:
+                return operation_failure
         except Exception as e:
-            print(e)
+            return operation_failure
 
-        return Response("aaa")
+        return Response(self.serializer_class(user).data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.detail_serializer_class(instance)
         return Response(serializer.data)
-
-    # def certify(self, request):
-    #     cache.

@@ -134,6 +134,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Seoul'
 
+CACHE_TTL_DEFAULT = 60 * 10
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
