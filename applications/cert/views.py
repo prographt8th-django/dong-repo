@@ -54,3 +54,19 @@ class UserViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.detail_serializer_class(instance)
         return Response(serializer.data)
+
+    @action(methods=['GET'], detail=False)
+    def confirm(self, request, *args, **kwargs):
+        token = request.query_params.get('token')
+        if cache.get(token):
+            print('======== cache start ========')
+            print(f'token: {token}, email: f{cache.get(token)}')
+
+            # TODO: Email unique 시키고 filter 수정
+            user = User.objects.filter(email=cache.get(token)).last()
+            user.is_active = True
+            user.save()
+
+            print("======= cache end ========")
+            return operation_success
+        return operation_failure
