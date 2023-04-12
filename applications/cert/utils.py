@@ -1,9 +1,8 @@
-import six
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.crypto import get_random_string
 
 
-class Test(PasswordResetTokenGenerator):
-    def _make_hash_value(self, user, timestamp):
-        return (six.text_type(user.pk) + six.text_type(timestamp)) + six.text_type(user.is_active)
-
-
+def randomToken():
+    """
+    이메일 인증 시 임시 토큰 생성 함수입니다.
+    """
+    return get_random_string(length=50)
